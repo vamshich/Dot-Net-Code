@@ -3,4 +3,6 @@ TempTables
 Table variables parameters(TVP)
 Derived Tables
 Comma table expression (CTE)
+Index
+Performance Optimization
 
