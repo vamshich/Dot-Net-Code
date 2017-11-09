@@ -1,0 +1,11 @@
+To Prepare
+----------
+Jquery
+C#
+EntityFramework
+MVC
+Design Patterns
+SQL
+
+
+Cookies

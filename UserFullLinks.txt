@@ -1,0 +1,44 @@
+
+ __________________________MVC_____________________________________ 
+
+Ajax form submit : http://www.codeguru.com/csharp/.net/working-with-ajax-helper-in-asp.net-mvc.htm
+Data set :https://msdn.microsoft.com/en-us/library/ss7fbaez(v=vs.110).aspx
+
+websites:
+Code guru
+http://www.shiningtreasures.com/post/2013/09/02/how-to-make-mvcsitemapprovider-remember-a-user-position ------>breadcrumb
+Msdn for mvc:   http://www.asp.net/mvc
+Exception Handling in mvc ::http://iamlevi.net/asp-net-mvc-4-ways-handle-exceptions/
+Stored Procedures:: https://www.mssqltips.com/sqlservertutorial/160/sql-server-stored-procedure-tutorial/
+                    https://www.mindstick.com/Beginner/567/stored-procedure-in-sql   
+Entity frame work ::http://www.entityframeworktutorial.net/what-is-entityframework.aspx
+Ajax helper methods::http://eliot-jones.com/2014/09/mvc-ajax-3 
+ado data operation:http://www.csharp-station.com/Tutorial/AdoDotNet/Lesson04
+lamda expreession:http://linq101.nilzorblog.com/linq101-lambda.php
+EF:http://www.entityframeworktutorial.net/stored-procedure-in-entity-framework.aspx
+
+
+visual studio shortcuts:http://visualstudioshortcuts.com/2013/
+multiple file upload:http://www.aspdotnet-pools.com/2014/06/multiple-file-upload-with-aspnet-mvc-c.html
+
+http://stackoverflow.com/questions/581703/how-to-do-a-asp-net-mvc-ajax-form-post-with-multipart-form-data
+
+
+
+
+
+
+
+jquery:http://jquery.malsup.com/form/#validation
+
+sql:http://www.dofactory.com/
+
+ ASP.NET MVC :https://demos.devexpress.com/MVCxChartDemos/AreaTypes/AreaView
+-------------------------------SITECORE------------------------------------------------------------------------------
+
+https://doc.sitecore.net/sitecore_experience_platform/managing_items/walkthrough_setting_up_rss_feeds----------->RSS FEED
+
+
+
+______________________________JQUERY______________________________________________________
+http://www.sitepoint.com/working-jquery-datatables/

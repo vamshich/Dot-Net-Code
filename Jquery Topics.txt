@@ -1,0 +1,48 @@
+	   Jquery Patterns
+-------------------------------------------	  
+1)https://learn.jquery.com/code-organization/beware-anonymous-functions/
+ 
+	   / BAD
+$( document ).ready(function() {
+ 
+    $( "#magic" ).click(function( event ) {
+        $( "#yayeffects" ).slideUp(function() {
+            // ...
+        });
+    });
+ 
+    $( "#happiness" ).load( url + " #unicorns", function() {
+        // ...
+    });
+ 
+});
+
+ 
+// BETTER
+var PI = {
+ 
+    onReady: function() {
+        $( "#magic" ).click( PI.candyMtn );
+        $( "#happiness" ).load( PI.url + " #unicorns", PI.unicornCb );
+    },
+ 
+    candyMtn: function( event ) {
+        $( "#yayeffects" ).slideUp( PI.slideCb );
+    },
+ 
+    slideCb: function() { ... },
+ 
+    unicornCb: function() { ... }
+ 
+};
+ 
+$( document ).ready( PI.onReady );
+
+2)Jquery performancr  : https://learn.jquery.com/performance/append-outside-loop/
+
+
+
+3)Jquery Keyword
+.)Detach    :  https://learn.jquery.com/performance/detach-elements-before-work-with-them/
+
+

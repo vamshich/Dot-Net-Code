@@ -1,0 +1,8 @@
+MVC
+--------------------
+1) LINQ and LAMDA
+
+https://www.simple-talk.com/dotnet/net-development/visual-lexicon-linq/
+https://code.msdn.microsoft.com/101-LINQ-Samples-3fb9811b
+http://linqsamples.com/
+
