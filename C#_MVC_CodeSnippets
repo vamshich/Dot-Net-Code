@@ -1,0 +1,18 @@
+ 
+                                      CODE
+------------------------------------------------------------------------------------------------------------------------------------ 
+1) Json Class to handle json data 
+ public  class JsonResultModel
+    {
+         
+         public bool Status { get; set; }
+         public string Message { get; set; }
+         public object Data { get; set; }
+         
+    }
+    
+     JsonResultModel js = new JsonResultModel();
+     js.Message = "OK";
+     js.Status = true;
+     js.Data = new { splineData = splineResult,Periods="2018" };
+ -----------------------------------------------------------------------------------------------------------------------------------    
