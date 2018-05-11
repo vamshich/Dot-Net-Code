@@ -16,3 +16,13 @@
      js.Status = true;
      js.Data = new { splineData = splineResult,Periods="2018" };
  -----------------------------------------------------------------------------------------------------------------------------------    
+2)DataTable to JsonStrin
+
+       public string DataTableToJSONWithJSONNet(DataTable table)
+        {
+            string JSONString = string.Empty;
+            JSONString = JsonConvert.SerializeObject(table);
+            return JSONString;
+        }
+        
+        DataTableToJSONWithJSONNet(dt);
