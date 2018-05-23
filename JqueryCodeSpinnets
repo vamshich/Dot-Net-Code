@@ -24,7 +24,7 @@
         });
         
         
-    function GetSpGetDatalineGrid(message)
+    function GetData(message)
     {
        
         return $.ajax({
