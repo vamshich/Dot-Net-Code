@@ -1,0 +1,13 @@
+ 1)Exceting Query using Entity framework
+ 
+ a)Excuting Raw Query
+ 
+ dbContext.Database.ExecuteSqlCommand("DELETE FROM tblForecastInput WHERE ForecastID =  @ForecastID AND ScenarioID = @ScenarioID AND Section = @Section", delForecastID, delScenarioID, delSection);
+  
+  b)Excuting Sp with parameters
+        SqlParameter param1 = new SqlParameter("@ForecastID", forecastID);
+        SqlParameter param2 = new SqlParameter("@Scenario", scenario);
+        SqlParameter param3 = new SqlParameter("@ScenarioID", scenarioID);
+        dbContext.Database.ExecuteSqlCommand("exec usp_GetEffectiveShares @ForecastID,@Scenario,@ScenarioID", param1, param2, param3);
+ 
+------------------------------------------------------------------------------------------------------------------------------------------
