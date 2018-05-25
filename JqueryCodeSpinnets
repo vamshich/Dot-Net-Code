@@ -73,24 +73,7 @@
         return _result;//
     }
 
-    //Private functions
-    function getDenominationValue(denom) {
-        var _val = null;
-        switch (denom) {
-            case "A":
-                _val = 1;
-                break;
-            case "K":
-                _val = 1000;
-                break;
-            case "M":
-                _val = 1000000;
-                break;
-            default:
-                console.warn("invalid denomination " + denom);
-        }
-        return _val;
-    }
+  
     //End=========Numer format - Denomination algorthm===============
 
 
@@ -143,122 +126,7 @@
         }
     }
 
-    function getQuarterName(month) {
-        var quarter = "";
-        switch (month) {
-            case 0:
-            case 1:
-            case 2:
-                quarter = "Q1";
-                break;
-            case 3:
-            case 4:
-            case 5:
-                quarter = "Q2";
-                break;
-            case 6:
-            case 7:
-            case 8:
-                quarter = "Q3";
-                break;
-            case 9:
-            case 10:
-            case 11:
-                quarter = "Q4";
-                break;
-        }
-        return quarter;
-    }
-    //End=========Forecast duration - Generating start year to end year of a forecast===============
-
-
-    Common.prototype.getAxisLabels = function (sectionName, numericFormate, YaxisTitle) {
-
-        var Xaxis = "Duration", Yaxis;
-        YaxisTitle = YaxisTitle ? YaxisTitle : 'USD';
-        //var GrossSalesYaxisTitle = $("#currency_GrossSales option:selected").text();
-        //var NetSalesYaxisTitle = $("#currency_NetSales option:selected").text();
-        switch (sectionName.replace(/\s/g, '')) {
-            case "PatientNumbers":
-            case "DrilledDown_PatientNumbers":
-                Yaxis = "Patient Numbers";
-                break;
-
-            case "PDOT":
-            case "DrilledDown_PDOT":
-                Yaxis = "PDOT";
-                break;
-            case "PYOT":
-                Yaxis = "PYOT";
-                break;
-            case "PMOT":
-                Yaxis = "PMOT";
-                break;
-            case "PQOT":
-                Yaxis = "PQOT";
-                break;
-
-            case "ProductVolume":
-            case "DrilledDown_ProductVolume":
-                Yaxis = "Volume";
-                break;
-
-            case "GrossSales":
-            case "DrilledDown_GrossSales":
-                Yaxis = YaxisTitle;
-                break;
-
-            case "NetSales":
-            case "DrilledDown_NetSales":
-                Yaxis = YaxisTitle;
-                break;
-
-            case "Risk-AdjustedSales":
-            case "DrilledDown_Risk-AdjustedSales":
-                Yaxis = YaxisTitle;
-                break;
-
-            case "TotalMilligrams":
-            case "DrilledDown_TotalMilligrams":
-                Yaxis = "Total Milligrams";
-                break;
-
-            case "CompliantPDOT":
-            case "DrilledDown_CompliantPDOT":
-                Yaxis = "Compliant PDOT";
-                break;
-
-            case "AdjustedVials":
-            case "DrilledDown_AdjustedVials":
-                Yaxis = "Adjusted Vials";
-                break;
-
-            case "RealizedClassShares":
-            case "DrilledDown_RealizedClassShares":
-                Yaxis = "Realized Class Shares";
-                break;
-
-            default:
-                Yaxis = "Values";
-
-        }
-
-        if (numericFormate == "A") {
-            Yaxis = Yaxis;
-        }
-        if (numericFormate == "K") {
-            Yaxis = Yaxis + "(Thousands)";
-        }
-        if (numericFormate == "M") {
-            Yaxis = Yaxis + "(Millions)";
-        }
-        
-        var obj = {
-            Xaxis: Xaxis,
-            Yaxis: Yaxis
-        };
-        return obj;
-    }
+ 
 
     Common.prototype.getQueryStringValue = function (name, url) {
         if (!url)
