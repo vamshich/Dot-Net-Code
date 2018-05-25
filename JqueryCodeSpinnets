@@ -12,7 +12,7 @@
     }
     find_in_object(hotdata,{ProductType :"Events",ParameterId:12});
 --------------------------------------------------------------------------------------------------------------------------------------
-2)Ajax Promise 
+2)//Ajax Promise 
       var param ="Parameters"
        GetData(param).done(function(response)
         {
@@ -38,3 +38,272 @@
       
     }
     -------------------------------------------------------------------------------------------------------------------------------------
+3) // Creating functions  using Prototype
+      --Best way for maintaing common function 
+
+    (function ($) {
+
+    this.Common = function () { };
+
+    //Start=========Numer format - Denomination algorthm===============
+    Common.prototype.calculateDenomination = function (value, previousDenomination, currentDenomination, roudOff) {
+
+        if (!$.isNumeric(value)) {
+            return value;
+        }
+        previousDenomination = previousDenomination ? previousDenomination.trim() : previousDenomination;
+        currentDenomination = currentDenomination ? currentDenomination.trim() : currentDenomination;
+
+        var _current = null, _selected = null, _result = value ? parseFloat(value) : 0;
+        previousDenomination = previousDenomination ? previousDenomination : "A";
+        if (value && previousDenomination && currentDenomination) {
+            try {
+                _current = getDenominationValue(previousDenomination.trim());
+                selected = getDenominationValue(currentDenomination.trim());
+                if (_current && selected) {
+                    //_result = roudOff ? ((value * _current) / selected).noExponents().toString().match(/^-?\d+(?:\.\d{0,2})?/)[0] : ((value * _current) / selected).noExponents();
+                    //_result = roudOff ? Math.round(((value * _current) / selected) * 100)/100 : ((value * _current) / selected);
+                    _result = roudOff ? parseFloat(((value * _current) / selected).noExponents()).toFixed(2) : ((value * _current) / selected).noExponents();
+                }
+
+            } catch (e) {
+                _result = 0;
+            }
+        }
+        return _result;//
+    }
+
+    //Private functions
+    function getDenominationValue(denom) {
+        var _val = null;
+        switch (denom) {
+            case "A":
+                _val = 1;
+                break;
+            case "K":
+                _val = 1000;
+                break;
+            case "M":
+                _val = 1000000;
+                break;
+            default:
+                console.warn("invalid denomination " + denom);
+        }
+        return _val;
+    }
+    //End=========Numer format - Denomination algorthm===============
+
+
+    //Start=========Forecast duration - Generating start year to end year of a forecast===============
+    Common.prototype.GenerateForecastDuration = function (startYear, frequency, numOfFrequency) {
+
+        try {
+            var monthName = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            var liColumns = [],
+                forecastYear = new Date(startYear).getFullYear(),
+                forecastMonth = new Date(startYear).getMonth(),
+                yearForecast = 0;
+
+            if (forecastYear && forecastMonth >= 0) {
+                if (frequency.toUpperCase() == "YEAR") {
+                    for (var i = 0; i <= numOfFrequency; i++) {
+                        yearForecast = forecastYear + i;
+                        liColumns.push(yearForecast.toString());
+                    }
+                }
+                else if (frequency.toUpperCase() == "QUARTER") {
+                    for (var i = 0; i <= numOfFrequency; i++) {
+                        if (i > 0) {
+                            forecastMonth += 3;
+                            if (forecastMonth > 11) {
+                                forecastMonth = forecastMonth - 12;
+                                forecastYear = forecastYear + 1;
+                            }
+                        }
+                        var currentQuarterName = getQuarterName(forecastMonth);
+                        liColumns.push(currentQuarterName + "-" + forecastYear);
+                    }
+                }
+                else if (frequency.toUpperCase() == "MONTH") {
+                    for (var i = 0; i <= numOfFrequency; i++) {
+                        var currentMonthName = monthName[forecastMonth];
+                        liColumns.push(currentMonthName + "-" + forecastYear);
+                        forecastMonth += 1;
+                        if (forecastMonth > 11) {
+                            forecastYear = forecastYear + 1;
+                            forecastMonth = 0;
+                        }
+                    }
+                }
+            }
+            return liColumns;
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function getQuarterName(month) {
+        var quarter = "";
+        switch (month) {
+            case 0:
+            case 1:
+            case 2:
+                quarter = "Q1";
+                break;
+            case 3:
+            case 4:
+            case 5:
+                quarter = "Q2";
+                break;
+            case 6:
+            case 7:
+            case 8:
+                quarter = "Q3";
+                break;
+            case 9:
+            case 10:
+            case 11:
+                quarter = "Q4";
+                break;
+        }
+        return quarter;
+    }
+    //End=========Forecast duration - Generating start year to end year of a forecast===============
+
+
+    Common.prototype.getAxisLabels = function (sectionName, numericFormate, YaxisTitle) {
+
+        var Xaxis = "Duration", Yaxis;
+        YaxisTitle = YaxisTitle ? YaxisTitle : 'USD';
+        //var GrossSalesYaxisTitle = $("#currency_GrossSales option:selected").text();
+        //var NetSalesYaxisTitle = $("#currency_NetSales option:selected").text();
+        switch (sectionName.replace(/\s/g, '')) {
+            case "PatientNumbers":
+            case "DrilledDown_PatientNumbers":
+                Yaxis = "Patient Numbers";
+                break;
+
+            case "PDOT":
+            case "DrilledDown_PDOT":
+                Yaxis = "PDOT";
+                break;
+            case "PYOT":
+                Yaxis = "PYOT";
+                break;
+            case "PMOT":
+                Yaxis = "PMOT";
+                break;
+            case "PQOT":
+                Yaxis = "PQOT";
+                break;
+
+            case "ProductVolume":
+            case "DrilledDown_ProductVolume":
+                Yaxis = "Volume";
+                break;
+
+            case "GrossSales":
+            case "DrilledDown_GrossSales":
+                Yaxis = YaxisTitle;
+                break;
+
+            case "NetSales":
+            case "DrilledDown_NetSales":
+                Yaxis = YaxisTitle;
+                break;
+
+            case "Risk-AdjustedSales":
+            case "DrilledDown_Risk-AdjustedSales":
+                Yaxis = YaxisTitle;
+                break;
+
+            case "TotalMilligrams":
+            case "DrilledDown_TotalMilligrams":
+                Yaxis = "Total Milligrams";
+                break;
+
+            case "CompliantPDOT":
+            case "DrilledDown_CompliantPDOT":
+                Yaxis = "Compliant PDOT";
+                break;
+
+            case "AdjustedVials":
+            case "DrilledDown_AdjustedVials":
+                Yaxis = "Adjusted Vials";
+                break;
+
+            case "RealizedClassShares":
+            case "DrilledDown_RealizedClassShares":
+                Yaxis = "Realized Class Shares";
+                break;
+
+            default:
+                Yaxis = "Values";
+
+        }
+
+        if (numericFormate == "A") {
+            Yaxis = Yaxis;
+        }
+        if (numericFormate == "K") {
+            Yaxis = Yaxis + "(Thousands)";
+        }
+        if (numericFormate == "M") {
+            Yaxis = Yaxis + "(Millions)";
+        }
+        
+        var obj = {
+            Xaxis: Xaxis,
+            Yaxis: Yaxis
+        };
+        return obj;
+    }
+
+    Common.prototype.getQueryStringValue = function (name, url) {
+        if (!url)
+            url = window.location.href.toLowerCase();
+        name = name.replace(/[\[\]]/g, "\\$&").toLowerCase();
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    Common.prototype.findElementPosition = function (elementId) {
+        var curtop = 0,
+            obj = document.getElementById(elementId);
+        if (obj && obj.offsetParent) {
+            do {
+                curtop += obj.offsetTop;
+            }
+            while (obj = obj.offsetParent);
+            return [curtop];
+        }
+        else {
+            return document.body.scrollTop;
+        }
+    }
+
+    //Synchronous version of setTimeOut function
+    Common.prototype.syncSetTimeout = function (arg1, delay) {
+        var dt = new Date();
+        while ((new Date()) - dt <= delay){ }
+        arg1();
+    }
+
+    Common.prototype.calculateAverage = function(arrayParam){
+        if (arrayParam && $.isArray(arrayParam)) {
+            var sum = arrayParam.reduce((a, b) => a + b, 0);
+            return sum/arrayParam.length;
+        }
+        else {
+            console.warn('Parameter should be an array to calculate the average');
+        }
+    }
+
+})(jQuery);
+
+    var common = new Common();
+    common.GenerateForecastDuration(oldLaunchDate,type,"0");
