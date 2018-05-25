@@ -175,3 +175,93 @@
 
     var common = new Common();
     common.GenerateForecastDuration(oldLaunchDate,type,"0");
+----------------------------------------------------------------------------------------------------------------------------------------
+4) //Extension Methods in Javascript
+
+
+//Format number with thousand separator 
+Number.prototype.numericFormat = function numberWithCommas() {
+    var num = this;
+    var parts = num.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
+//Format number with thousand separator 
+String.prototype.numericFormat = function numberWithCommas() {
+    var num = this;
+    var parts = num.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
+
+//strip html tags from string 
+String.prototype.stripHtml = function () {
+    try {
+        var str = this ? this : '';
+        return str.replace(/<\/?[^>]+>/gi, '').replace(/&nbsp;/g, '');
+
+    } catch (e) {
+        return '';
+    }
+}
+
+Number.prototype.noExponents = function () {
+    var data = String(this).split(/[eE]/);
+    if (data.length == 1) return data[0];
+
+    var z = '', sign = this < 0 ? '-' : '',
+    str = data[0].replace('.', ''),
+    mag = Number(data[1]) + 1;
+
+    if (mag < 0) {
+        z = sign + '0.';
+        while (mag++) z += '0';
+        return z + str.replace(/^\-/, '');
+    }
+    mag -= str.length;
+    while (mag--) z += '0';
+    return str + z;
+}
+
+Date.prototype.addDays = function (days) {
+    var dat = new Date(this.valueOf());
+    dat.setDate(dat.getDate() + days);
+    return dat;
+}
+
+Date.prototype.addMonths = function (days) {
+    var dat = new Date(this.valueOf());
+    dat.setMonth(dat.getMonth() + days);
+    return dat;
+}
+
+Date.prototype.addYears = function (days) {
+    var dat = new Date(this.valueOf());
+    dat.setFullYear(dat.getFullYear() + days);
+    return dat;
+}
+
+Date.prototype.getNextQuaterDate = function() {
+    var currentDate = new Date(this.valueOf()),
+        currentMonth = currentDate.getMonth(),
+        currentYear = currentDate.getFullYear(),
+        quaterNumber = Math.floor((currentMonth + 3) / 3),
+        result = null;
+    switch (quaterNumber) {
+        case 1:
+            result = new Date('04/01/' + currentYear);
+            break;
+        case 2:
+            result = new Date('07/01/' + currentYear);
+            break;
+        case 3:
+            result = new Date('10/01/' + currentYear);
+            break;
+        case 4:
+            result = new Date('01/01/' + (currentYear + 1));
+            break;
+    }
+    return result;
+}
+
