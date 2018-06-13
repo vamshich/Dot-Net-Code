@@ -1,13 +1,116 @@
- 1)Exceting Query using Entity framework
+ Exceting Query using Entity framework
  
- a)Excuting Raw Query
+1)Excuting Raw Query
  
  dbContext.Database.ExecuteSqlCommand("DELETE FROM tblForecastInput WHERE ForecastID =  @ForecastID AND ScenarioID = @ScenarioID AND Section = @Section", delForecastID, delScenarioID, delSection);
   
-  b)Excuting Sp with parameters
+ 2)Excuting Sp with parameters
         SqlParameter param1 = new SqlParameter("@ForecastID", forecastID);
         SqlParameter param2 = new SqlParameter("@Scenario", scenario);
         SqlParameter param3 = new SqlParameter("@ScenarioID", scenarioID);
         dbContext.Database.ExecuteSqlCommand("exec usp_GetEffectiveShares @ForecastID,@Scenario,@ScenarioID", param1, param2, param3);
  
+ 
+ 3) Bulk Remove of data
+ dbContext.tblForecastProductPricings.RemoveRange(dbContext.tblForecastProductPricings.Where(x => x.ForecastID == forecastID && x.ScenarioID == scenarioID));
+
+4) EntityFramework Bulk Copy
+  dbContext.BulkInsert(list);
+  
+ 5) Query to return the model
+ var data = objContext.Database.SqlQuery<tblForecastInput>("exec USP_GetForecastInputById {0}", ForecastID).FirstOrDefault();
+ 
+ 6)SQL bulk Copy
+ 
+  using (SqlBulkCopy bulkCopy = new SqlBulkCopy(cs))
+                    {
+                        bulkCopy.BatchSize = list.Count;
+                        bulkCopy.BulkCopyTimeout = 0;
+                        bulkCopy.BatchSize = 5000;
+                        bulkCopy.DestinationTableName = "tblForecastInput";
+
+                        var table = new DataTable();
+                        var props = TypeDescriptor.GetProperties(typeof(tblForecastInput))
+                            //Dirty hack to make sure we only have system data types 
+                            //i.e. filter out the relationships/collections
+                                                   .Cast<PropertyDescriptor>()
+                                                   .Where(propertyInfo => propertyInfo.PropertyType.Namespace.Equals("System"))
+                                                   .ToArray();
+
+                        foreach (var propertyInfo in props)
+                        {
+                            bulkCopy.ColumnMappings.Add(propertyInfo.Name, propertyInfo.Name);
+                            table.Columns.Add(propertyInfo.Name, Nullable.GetUnderlyingType(propertyInfo.PropertyType) ?? propertyInfo.PropertyType);
+                        }
+
+                        var values = new object[props.Length];
+                        foreach (var item in list)
+                        {
+                            for (var i = 0; i < values.Length; i++)
+                            {
+                                values[i] = props[i].GetValue(item);
+                            }
+
+                            table.Rows.Add(values);
+                        }
+
+                        bulkCopy.WriteToServer(table);
+                    }
+
+
+                }
+
+ 7) Ado dot net to return datatable/dataset
+ 
+    DataSet ds = new DataSet();
+
+            using (IndForecastingContext dbContext = new IndForecastingContext())
+            {
+                var conn = dbContext.Database.Connection;
+                var connectionState = conn.State;
+                try
+                {
+                    if (connectionState != ConnectionState.Open)
+                        conn.Open();
+
+                    DbProviderFactory factory = DbProviderFactories.GetFactory(conn);
+
+                    List<SqlParameter> spParams = new List<SqlParameter>();
+
+                    //spParams.Add(new SqlParameter { ParameterName = "@forecastIds", Value = forecastSummary.ForecastIds });
+                    spParams.Add(new SqlParameter { ParameterName = "@country", Value = forecastSummary.Countrys });
+                    spParams.Add(new SqlParameter { ParameterName = "@indications", Value = forecastSummary.Indications });
+                    spParams.Add(new SqlParameter { ParameterName = "@products", Value = forecastSummary.Products });
+                    spParams.Add(new SqlParameter { ParameterName = "@scenario", Value = forecastSummary.Scenario });
+                    spParams.Add(new SqlParameter { ParameterName = "@itemType", Value = forecastSummary.ItemType });
+                    spParams.Add(new SqlParameter { ParameterName = "@outputSection ", Value = forecastSummary.Section });
+                    spParams.Add(new SqlParameter { ParameterName = "@periods", Value = forecastSummary.Periods });
+                    spParams.Add(new SqlParameter { ParameterName = "@frequency", Value = forecastSummary.Frequency });
+                    spParams.Add(new SqlParameter { ParameterName = "@CurrencyID", Value = forecastSummary.CurrencyID });
+                    spParams.Add(new SqlParameter { ParameterName = "@CurrentUserID", Value = forecastSummary.CurrentUserID });
+                    spParams.Add(new SqlParameter { ParameterName = "@forecast_List", Value = forecastSummary.ForecastListTable, SqlDbType = SqlDbType.Structured, TypeName = "FocastList" });
+                    spParams.Add(new SqlParameter { ParameterName = "@isRollUp", Value = forecastSummary.IsRollUp });
+                    using (var cmd = factory.CreateCommand())
+                    {
+                        cmd.Connection = conn;
+                        //cmd.CommandText =  (!forecastSummary.IsRollUp) ?"[dbo].[GetForecastSummaryReports]":"[dbo].[GetForecastSummaryReportsRollUp]";
+                        cmd.CommandText = "[dbo].[GetForecastSummaryReports]";
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddRange(spParams.ToArray());
+                        cmd.CommandTimeout = 0;
+                        DbDataAdapter adapter = factory.CreateDataAdapter();
+                        adapter.SelectCommand = cmd;
+                        adapter.Fill(ds);
+                    }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    if (connectionState == ConnectionState.Open)
+                        conn.Close();
+                }
+            }
+            return ds
 ------------------------------------------------------------------------------------------------------------------------------------------
