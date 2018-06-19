@@ -264,4 +264,6 @@ Date.prototype.getNextQuaterDate = function() {
     }
     return result;
 }
-
+------------------------------------------------------------------------------------------------------------------------------------------
+5)Clone a array
+  var jsonDataObj = _.cloneDeep(updatedJsonData);
