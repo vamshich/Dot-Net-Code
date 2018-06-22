@@ -1,1 +1,53 @@
 
+1)Preparing Dynamic colums
+-----------------------------------------------------------------------------
+SELECT		
+		@DynamicPeriods = COALESCE(@DynamicPeriods +',', '') + QUOTENAME(Period)
+	FROM #Periods;
+
+
+SET @DynamicColumns =  STUFF((SELECT  ',' + ('MAX(ISNULL('+QUOTENAME(Period)+',0)) AS '+QUOTENAME(Period))
+                        FROM (select  Period from #Periods) as tblPeriod  
+                FOR XML PATH(''), TYPE
+                ).value('.', 'NVARCHAR(MAX)') 
+            ,1,1,'')
+            
+  
+2)PIVOT 
+ -------------------
+SET @SQL = 'SELECT  
+ParameterId,
+EventId,
+MAX(ProductType) as ProductType ,
+SegmentId,
+MAX(Comment)as Comment,
+MAX(Events) as Events,
+MAX(ShareTrend) as  ShareTrend,
+MAX(Indication) as Indication ,
+MAX(ForecastedProduct) as ForecastedProduct,
+MAX(ItemType) as ItemType,
+MAX(LaunchDate) as LaunchDate,
+MAX(Interpolate) as Interpolate ,
+MAX(StartPeriod) as StartPeriod,
+MAX(EndPeriod) as EndPeriod,
+MAX(Method) as Method,
+MAX(StartValue) as StartValue,
+MAX(EndValue) as EndValue,
+MAX(GrowthRate) as GrowthRate,
+MAX(Slope)as Slope,
+MAX(Constant) as Constant,
+MAX(GroupId) as GroupId,
+'+ @DynamicColumns +'  
+			FROM (
+				SELECT 
+					*
+				FROM #FinalInputShareData
+			) sl
+			PIVOT(
+			   --MAX(coalesce(PeriodInput,0))
+				--MAX(isnull(PeriodInput,0))
+				MAX(PeriodInput)
+				FOR Period IN ( '+ @DynamicPeriods +' )
+			) AS Pvt
+			Group by segmentId,ParameterId,eventid
+			ORDER BY segmentId ,ParameterId,eventid';
